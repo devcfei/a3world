@@ -177,6 +177,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 settings.pdraw->Draw(settings.drawSet);
             }
 
+            // drawA3
+            if (settings.pdrawA3)
+            {
+                settings.pdrawA3->UpdateView(settings.eyeX, settings.eyeY, settings.eyeZ, settings.camAngle);
+                settings.pdrawA3->Draw(settings.drawSet);
+            }
+
             g_pd3dDevice->EndScene();
         }
         HRESULT result = g_pd3dDevice->Present(NULL, NULL, NULL, NULL);

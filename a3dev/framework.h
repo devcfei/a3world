@@ -44,6 +44,7 @@
 #include "rect.h"
 #include "cube.h"
 #include "mesh.h"
+#include "chara.h"
 
 
 

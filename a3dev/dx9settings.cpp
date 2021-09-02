@@ -54,7 +54,14 @@ static void resetDrawSetting(dx9settings& settings)
 
         break;
 
+
+
+
+
+
     }
+
+
 
 
 
@@ -212,6 +219,13 @@ void DrawMeshTree(dx9settings& settings)
 
 void DrawSettings(dx9settings& settings)
 {
+
+    const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 650, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(main_viewport->WorkPos.x, 680), ImGuiCond_FirstUseEver);
+
+
+
     ImGui::Begin("Dx9 settings");
     //ImGui::Begin("Dx9 settings", 0, ImGuiWindowFlags_MenuBar);
 
@@ -220,29 +234,104 @@ void DrawSettings(dx9settings& settings)
 
     ImGui::Checkbox("Demo Window", &settings.show_demo_window);
 
-    if (ImGui::Button("Reset draw"))
+    if (ImGui::TreeNode("Simple"))
     {
-        resetDrawSetting(settings);
-    }
-
-    ImGui::ColorEdit3("clear color", (float*)&settings.clear_color); // Edit 3 floats representing a color
-
-
-
-    DrawScenario(settings);
-    if (settings.drawcase == CASE_MESH)
-    {
-
-        ImGui::InputTextWithHint("mesh", "input mesh path...", settings.szMeshPath, IM_ARRAYSIZE(settings.szMeshPath));
-        ImGui::SameLine();
-        if (ImGui::Button("..."))
+        if (ImGui::Button("Reset draw"))
         {
-            ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".csv", ".");
+            resetDrawSetting(settings);
+        }
+
+        ImGui::ColorEdit3("clear color", (float*)&settings.clear_color); // Edit 3 floats representing a color
+
+
+
+        DrawScenario(settings);
+        if (settings.drawcase == CASE_MESH)
+        {
+
+            ImGui::InputTextWithHint("mesh", "input mesh path...", settings.szMeshPath, IM_ARRAYSIZE(settings.szMeshPath));
+            ImGui::SameLine();
+            if (ImGui::Button("..."))
+            {
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".csv", ".");
+
+            }
+
+            // display
+            if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
+            {
+                // action if OK
+                if (ImGuiFileDialog::Instance()->IsOk())
+                {
+                    std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                    std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                    // action
+
+                    if (lstrcmpA(settings.szMeshPath, filePathName.c_str()))
+                    {
+                        lstrcpyA(settings.szMeshPath, filePathName.c_str());
+
+                        if (settings.pdraw)
+                        {
+                            delete settings.pdraw;
+
+                            settings.pdraw = NULL;
+                        }
+
+                    }
+
+
+                    USES_CONVERSION;
+                    LPCTSTR strPath = A2T(filePath.c_str());
+                    LPCTSTR strFile = A2T(filePathName.c_str());
+
+                    if (settings.pdraw == NULL)
+                    {
+                        settings.pdraw = new mesh(strPath, strFile);
+                        settings.pdraw->Create(settings.d3dDevcie);
+                    }
+                }
+
+                // close
+                ImGuiFileDialog::Instance()->Close();
+            }
+
 
         }
 
+        ImGui::SliderFloat("EyePT-X", &settings.eyeX, -100.0f, 100.0f, "ratio = %.5f");
+        ImGui::SliderFloat("EyePT-Y", &settings.eyeY, -100.0f, 100.0f, "ratio = %.5f");
+        ImGui::SliderFloat("EyePT-Z", &settings.eyeZ, -100.0f, 100.0f, "ratio = %.5f");
+        ImGui::SliderFloat("Camera-Angle", &settings.camAngle, -50.0f, 50.0f, "ratio = %.5f");
+
+
+        ImGui::Checkbox("D3DRS_LIGHTING", &settings.drawSet.lightOn);
+
+
+        DrawCullMode(settings);
+        DrawFillMode(settings);
+
+
+        ImGui::TreePop();
+
+    }
+
+
+    if (ImGui::TreeNode("A3 charactar"))
+    {
+
+        ImGui::InputTextWithHint("char", "char folder...", settings.szA3CharPath, IM_ARRAYSIZE(settings.szA3CharPath));
+        ImGui::SameLine();
+        if (ImGui::Button("..."))
+        {
+            ImGuiFileDialog::Instance()->OpenDialog("ChooseDirDlgKey", "Choose a Directory", nullptr, ".");
+
+        }
+
+
         // display
-        if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
+        if (ImGuiFileDialog::Instance()->Display("ChooseDirDlgKey"))
         {
             // action if OK
             if (ImGuiFileDialog::Instance()->IsOk())
@@ -252,15 +341,16 @@ void DrawSettings(dx9settings& settings)
 
                 // action
 
-                if (lstrcmpA(settings.szMeshPath, filePathName.c_str()))
+                if (lstrcmpA(settings.szA3CharPath, filePath.c_str()))
                 {
-                    lstrcpyA(settings.szMeshPath, filePathName.c_str());
+                    lstrcpyA(settings.szA3CharPath, filePath.c_str());
 
-                    if (settings.pdraw)
+
+                    if (settings.pdrawA3)
                     {
-                        delete settings.pdraw;
+                        delete settings.pdrawA3;
 
-                        settings.pdraw = NULL;
+                        settings.pdrawA3 = NULL;
                     }
 
                 }
@@ -270,32 +360,32 @@ void DrawSettings(dx9settings& settings)
                 LPCTSTR strPath = A2T(filePath.c_str());
                 LPCTSTR strFile = A2T(filePathName.c_str());
 
-                if (settings.pdraw == NULL)
+
+                if (settings.pdrawA3 == NULL)
                 {
-                    settings.pdraw = new mesh(strPath, strFile);
-                    settings.pdraw->Create(settings.d3dDevcie);
+                    settings.pdrawA3 = new chara(strPath);
+                    settings.pdrawA3->Create(settings.d3dDevcie);
+                    settings.drawSet.lightOn = false;
+
+                    settings.drawSet.fillMode = D3DFILL_SOLID;
+                    settings.drawSet.cullMode = D3DCULL_NONE;
+
+                    settings.eyeX = 0.0f;
+                    settings.eyeY = 0.0f;
+                    settings.eyeZ = 20.0f;
+
                 }
+                
+
             }
 
             // close
             ImGuiFileDialog::Instance()->Close();
         }
 
+        ImGui::TreePop();
 
     }
-
-    ImGui::SliderFloat("EyePT-X", &settings.eyeX, -100.0f, 100.0f, "ratio = %.5f");
-    ImGui::SliderFloat("EyePT-Y", &settings.eyeY, -100.0f, 100.0f, "ratio = %.5f");
-    ImGui::SliderFloat("EyePT-Z", &settings.eyeZ, -100.0f, 100.0f, "ratio = %.5f");
-    ImGui::SliderFloat("Camera-Angle", &settings.camAngle, -50.0f, 50.0f, "ratio = %.5f");
-
-
-    ImGui::Checkbox("D3DRS_LIGHTING", &settings.drawSet.lightOn);
-
-
-    DrawCullMode(settings);
-    DrawFillMode(settings);
-
 
     ImGui::End();
 

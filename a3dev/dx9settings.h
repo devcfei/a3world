@@ -7,6 +7,7 @@
 #define CASE_MESH		4
 
 
+
 struct dx9settings
 {
 	bool show_demo_window ;
@@ -29,6 +30,14 @@ struct dx9settings
 	drawsettings drawSet;
 
 	char szMeshPath[MAX_PATH];
+
+
+	// a3 related
+	char szA3CharPath[MAX_PATH];
+
+
+	draw* pdrawA3;
+
 
 };
 void DrawSettings(dx9settings& settings);

@@ -162,6 +162,7 @@
     <ClInclude Include="..\imgui\imstb_textedit.h" />
     <ClInclude Include="..\imgui\imstb_truetype.h" />
     <ClInclude Include="a3dev.h" />
+    <ClInclude Include="chara.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="draw.h" />
     <ClInclude Include="dx9settings.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="a3dev.cpp" />
+    <ClCompile Include="chara.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="dx9settings.cpp" />
     <ClCompile Include="mesh.cpp" />
