@@ -11,6 +11,8 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 HWND hWnd;
+static int iScreenWidth;
+static int iScreenHeight;
 
 
 static LPDIRECT3D9              g_pD3D = NULL;
@@ -54,6 +56,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.IniFilename = NULL;  // Disable imgui.ini
+
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -67,13 +71,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
     // Our state
-    bool show_demo_window = true;
+    bool show_demo_window = false;
+    bool show_simple_window = false;
     bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    //ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    struct dx9settings settings ={0};
 
+    settings.clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    settings.d3dDevcie = g_pd3dDevice;
+    settings.eyeZ = 5.0f;
+    
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_A3DEV));
 
     // Main loop
     bool done = false;
@@ -95,16 +104,27 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         if (done)
             break;
 
+
         // Start the Dear ImGui frame
         ImGui_ImplDX9_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
+
+
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
+        if (show_demo_window || settings.show_demo_window)
+        {
             ImGui::ShowDemoWindow(&show_demo_window);
 
+        }
+
+
+        DrawSettings(settings);
+
+
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+        if(show_simple_window)
         {
             static float f = 0.0f;
             static int counter = 0;
@@ -116,7 +136,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             ImGui::Checkbox("Another Window", &show_another_window);
 
             ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+            ImGui::ColorEdit3("clear color", (float*)&settings.clear_color); // Edit 3 floats representing a color
 
             if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
                 counter++;
@@ -142,12 +162,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
         g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
         g_pd3dDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-        D3DCOLOR clear_col_dx = D3DCOLOR_RGBA((int)(clear_color.x * clear_color.w * 255.0f), (int)(clear_color.y * clear_color.w * 255.0f), (int)(clear_color.z * clear_color.w * 255.0f), (int)(clear_color.w * 255.0f));
+        D3DCOLOR clear_col_dx = D3DCOLOR_RGBA((int)(settings.clear_color.x * settings.clear_color.w * 255.0f), (int)(settings.clear_color.y * settings.clear_color.w * 255.0f), (int)(settings.clear_color.z * settings.clear_color.w * 255.0f), (int)(settings.clear_color.w * 255.0f));
         g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0);
         if (g_pd3dDevice->BeginScene() >= 0)
         {
             ImGui::Render();
             ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+
+
+            // draw
+            if (settings.pdraw)
+            {
+                settings.pdraw->UpdateView(settings.eyeX,settings.eyeY, settings.eyeZ ,settings.camAngle);
+                settings.pdraw->Draw(settings.drawSet);
+            }
+
             g_pd3dDevice->EndScene();
         }
         HRESULT result = g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
@@ -211,8 +240,18 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
+
+   iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+   iScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+   int nWidth = 1024;
+   int nHeight = 768;
+
    hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+       (iScreenWidth - nWidth) / 2,
+       (iScreenHeight - nHeight) / 2,
+       nWidth, nHeight,
+       nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -226,6 +265,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
        CleanupDeviceD3D();
        return FALSE;
    }
+
+
 
 
    ShowWindow(hWnd, nCmdShow);
