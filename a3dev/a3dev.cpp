@@ -184,6 +184,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         // Handle loss of D3D9 device
         if (result == D3DERR_DEVICELOST && g_pd3dDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
             ResetDevice();
+
+
+
     }
 
     ImGui_ImplDX9_Shutdown();

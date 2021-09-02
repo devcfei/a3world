@@ -105,6 +105,7 @@ HRESULT cube::Draw(drawsettings& ds)
     hr = m_d3dDevice->SetRenderState(D3DRS_CULLMODE, ds.cullMode);
     hr = m_d3dDevice->SetRenderState(D3DRS_FILLMODE, ds.fillMode);
 
+    hr = m_d3dDevice->SetTexture(0, NULL);
 
 
     hr = m_d3dDevice->SetStreamSource(0, m_pVB, 0, sizeof(CUSTOMVERTEX));

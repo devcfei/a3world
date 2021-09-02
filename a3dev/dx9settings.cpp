@@ -5,7 +5,48 @@
 #include "a3dev.h"
 
 
+static void resetDrawSetting(dx9settings& settings)
+{
+    switch (settings.drawcase)
+    {
+    case CASE_TRIANGLE:
+        settings.drawSet.lightOn = false;
 
+        settings.drawSet.fillMode = D3DFILL_SOLID;
+        settings.drawSet.cullMode = D3DCULL_NONE;
+        settings.eyeX = 0.0f;
+        settings.eyeY = 0.0f;
+        settings.eyeZ = 5.0f;
+
+        break;
+    case CASE_RECTANGLE:
+        settings.drawSet.lightOn = false;
+
+        settings.drawSet.fillMode = D3DFILL_SOLID;
+        settings.drawSet.cullMode = D3DCULL_CW;
+        settings.eyeX = 0.0f;
+        settings.eyeY = 0.0f;
+        settings.eyeZ = 5.0f;
+        break;
+    case CASE_CUBE:
+        settings.drawSet.lightOn = false;
+
+        settings.drawSet.fillMode = D3DFILL_WIREFRAME;
+        settings.drawSet.cullMode = D3DCULL_NONE;
+
+        settings.eyeX = 0.0f;
+        settings.eyeY = 4.0f;
+        settings.eyeZ = 8.0f;
+
+
+        break;
+
+    }
+
+
+
+    settings.camAngle = 0.0f;
+}
 
 static void DrawScenario(dx9settings& settings)
 {
@@ -35,8 +76,6 @@ static void DrawScenario(dx9settings& settings)
             settings.pdraw->Create(settings.d3dDevcie);
             settings.drawcase = CASE_TRIANGLE;
 
-            settings.drawSet.fillMode = D3DFILL_SOLID;
-            settings.drawSet.cullMode = D3DCULL_NONE;
 
             break;
 
@@ -46,8 +85,7 @@ static void DrawScenario(dx9settings& settings)
             settings.pdraw->Create(settings.d3dDevcie);
             settings.drawcase = CASE_RECTANGLE;
 
-            settings.drawSet.fillMode = D3DFILL_SOLID;
-            settings.drawSet.cullMode = D3DCULL_CW;
+
 
             break;
 
@@ -58,12 +96,6 @@ static void DrawScenario(dx9settings& settings)
             settings.pdraw->Create(settings.d3dDevcie);
             settings.drawcase = CASE_CUBE;
 
-            settings.drawSet.fillMode = D3DFILL_WIREFRAME;
-            settings.drawSet.cullMode = D3DCULL_NONE;
-
-            settings.eyeX = 0.0f;
-            settings.eyeY = 4.0f;
-            settings.eyeZ = 8.0f;
 
             break;
 
@@ -72,6 +104,8 @@ static void DrawScenario(dx9settings& settings)
 
         }
 
+
+        resetDrawSetting(settings);
     }
 }
 
@@ -152,6 +186,8 @@ static void DrawFillMode(dx9settings& settings)
 }
 
 
+
+
 void DrawSettings(dx9settings& settings)
 {
     ImGui::Begin("Dx9 settings");
@@ -161,6 +197,11 @@ void DrawSettings(dx9settings& settings)
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
     ImGui::Checkbox("Demo Window", &settings.show_demo_window);
+
+    if (ImGui::Button("Reset draw"))
+    {
+        resetDrawSetting(settings);
+    }
 
     ImGui::ColorEdit3("clear color", (float*)&settings.clear_color); // Edit 3 floats representing a color
 

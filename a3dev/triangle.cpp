@@ -56,7 +56,7 @@ HRESULT triangle::Draw(drawsettings& ds)
     m_d3dDevice->SetRenderState(D3DRS_FILLMODE, ds.fillMode);
 
 
-
+    m_d3dDevice->SetTexture(0,NULL);
     m_d3dDevice->SetStreamSource(0, m_pVB, 0, sizeof(CUSTOMVERTEX));
     m_d3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
     m_d3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 1);
