@@ -99,3 +99,24 @@ HRESULT triangle::UpdateView(float eyeX, float eyeY, float eyeZ, float camAngle)
     m_d3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
     return S_OK;
 }
+
+HRESULT triangle::Reset()
+{
+    HRESULT hr = S_OK;
+
+
+    if (m_d3dDevice)
+    {
+        m_d3dDevice = NULL;
+    }
+
+    if (m_pVB)
+        m_pVB->Release();
+
+
+
+    if (m_pIB)
+        m_pIB->Release();
+
+    return hr;
+}

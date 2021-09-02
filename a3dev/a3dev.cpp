@@ -13,6 +13,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 HWND hWnd;
 static int iScreenWidth;
 static int iScreenHeight;
+struct dx9settings settings = { 0 };
 
 
 static LPDIRECT3D9              g_pD3D = NULL;
@@ -76,7 +77,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     bool show_another_window = false;
     //ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    struct dx9settings settings ={0};
 
     settings.clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     settings.d3dDevcie = g_pd3dDevice;
@@ -183,7 +183,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
         // Handle loss of D3D9 device
         if (result == D3DERR_DEVICELOST && g_pd3dDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
+        {
+
             ResetDevice();
+        }
 
 
 
@@ -309,6 +312,9 @@ void ResetDevice()
 {
     ImGui_ImplDX9_InvalidateDeviceObjects();
     HRESULT hr = g_pd3dDevice->Reset(&g_d3dpp);
+
+    if (settings.pdraw)
+        settings.pdraw->Reset();
     if (hr == D3DERR_INVALIDCALL)
         IM_ASSERT(0);
     ImGui_ImplDX9_CreateDeviceObjects();
@@ -407,4 +413,18 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+
+
+VOID TRACE(LPCTSTR pszFormat, ...)
+{
+    va_list pArgs;
+
+    TCHAR szMessageBuffer[16380] = { 0 };
+    va_start(pArgs, pszFormat);
+    StringCchVPrintf(szMessageBuffer, 10380, pszFormat, pArgs);
+    va_end(pArgs);
+
+    OutputDebugString(szMessageBuffer);
 }

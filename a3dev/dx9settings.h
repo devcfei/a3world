@@ -4,6 +4,7 @@
 #define CASE_TRIANGLE	1
 #define CASE_RECTANGLE	2
 #define CASE_CUBE		3
+#define CASE_MESH		4
 
 
 struct dx9settings
@@ -26,6 +27,8 @@ struct dx9settings
 
 
 	drawsettings drawSet;
+
+	char szMeshPath[MAX_PATH];
 
 };
 void DrawSettings(dx9settings& settings);

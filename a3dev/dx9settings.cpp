@@ -41,6 +41,19 @@ static void resetDrawSetting(dx9settings& settings)
 
         break;
 
+    case CASE_MESH:
+        settings.drawSet.lightOn = false;
+
+        settings.drawSet.fillMode = D3DFILL_SOLID;
+        settings.drawSet.cullMode = D3DCULL_NONE;
+
+        settings.eyeX = 0.0f;
+        settings.eyeY = 4.0f;
+        settings.eyeZ = 8.0f;
+
+
+        break;
+
     }
 
 
@@ -53,7 +66,7 @@ static void DrawScenario(dx9settings& settings)
     
     // Using the _simplified_ one-liner Combo() api here
     // See "Combo" section for examples of how to use the more flexible BeginCombo()/EndCombo() api.
-    const char* items[] = { "null","triangle", "rectangle", "cube"};
+    const char* items[] = { "null","triangle", "rectangle", "cube", "mesh"};
     static int item_current = 0;
     ImGui::Combo("draw scenario", &item_current, items, IM_ARRAYSIZE(items));
 
@@ -97,6 +110,12 @@ static void DrawScenario(dx9settings& settings)
             settings.drawcase = CASE_CUBE;
 
 
+            break;
+
+
+        case 4:
+
+            settings.drawcase = CASE_MESH;
             break;
 
         default:
@@ -186,7 +205,10 @@ static void DrawFillMode(dx9settings& settings)
 }
 
 
+void DrawMeshTree(dx9settings& settings)
+{
 
+}
 
 void DrawSettings(dx9settings& settings)
 {
@@ -208,7 +230,59 @@ void DrawSettings(dx9settings& settings)
 
 
     DrawScenario(settings);
+    if (settings.drawcase == CASE_MESH)
+    {
 
+        ImGui::InputTextWithHint("mesh", "input mesh path...", settings.szMeshPath, IM_ARRAYSIZE(settings.szMeshPath));
+        ImGui::SameLine();
+        if (ImGui::Button("..."))
+        {
+            ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".csv", ".");
+
+        }
+
+        // display
+        if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
+        {
+            // action if OK
+            if (ImGuiFileDialog::Instance()->IsOk())
+            {
+                std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                // action
+
+                if (lstrcmpA(settings.szMeshPath, filePathName.c_str()))
+                {
+                    lstrcpyA(settings.szMeshPath, filePathName.c_str());
+
+                    if (settings.pdraw)
+                    {
+                        delete settings.pdraw;
+
+                        settings.pdraw = NULL;
+                    }
+
+                }
+
+
+                USES_CONVERSION;
+                LPCTSTR strPath = A2T(filePath.c_str());
+                LPCTSTR strFile = A2T(filePathName.c_str());
+
+                if (settings.pdraw == NULL)
+                {
+                    settings.pdraw = new mesh(strPath, strFile);
+                    settings.pdraw->Create(settings.d3dDevcie);
+                }
+            }
+
+            // close
+            ImGuiFileDialog::Instance()->Close();
+        }
+
+
+    }
 
     ImGui::SliderFloat("EyePT-X", &settings.eyeX, -100.0f, 100.0f, "ratio = %.5f");
     ImGui::SliderFloat("EyePT-Y", &settings.eyeY, -100.0f, 100.0f, "ratio = %.5f");

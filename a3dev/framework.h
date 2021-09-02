@@ -13,12 +13,23 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <strsafe.h>
+
+#include <atlconv.h>
+
+
+#include <vector>
+#include <iostream>  
+#include <string>  
+#include <fstream>  
+#include <sstream> 
 
 
 
 #include "imgui.h"
 #include "imgui_impl_dx9.h"
 #include "imgui_impl_win32.h"
+#include "ImGuiFileDialog.h"
 #include <d3d9.h>
 #include <d3dx9.h>
 
@@ -32,10 +43,13 @@
 #include "triangle.h"
 #include "rect.h"
 #include "cube.h"
+#include "mesh.h"
 
 
 
 
 #include "dx9settings.h"
+
+VOID TRACE(LPCTSTR pszFormat, ...);
 
 
