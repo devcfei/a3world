@@ -163,6 +163,7 @@
     <ClInclude Include="draw.h" />
     <ClInclude Include="dx9settings.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="rect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="triangle.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="a3dev.cpp" />
     <ClCompile Include="dx9settings.cpp" />
+    <ClCompile Include="rect.cpp" />
     <ClCompile Include="triangle.cpp" />
   </ItemGroup>
   <ItemGroup>

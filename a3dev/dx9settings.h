@@ -2,6 +2,7 @@
 
 #define CASE_NULL		0
 #define CASE_TRIANGLE	1
+#define CASE_RECTANGLE	2
 
 
 struct dx9settings

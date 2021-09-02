@@ -12,9 +12,9 @@ static void DrawScenario(dx9settings& settings)
     
     // Using the _simplified_ one-liner Combo() api here
     // See "Combo" section for examples of how to use the more flexible BeginCombo()/EndCombo() api.
-    const char* items[] = { "null","triangle" };
+    const char* items[] = { "null","triangle", "rectangle"};
     static int item_current = 0;
-    ImGui::Combo("case", &item_current, items, IM_ARRAYSIZE(items));
+    ImGui::Combo("draw scenario", &item_current, items, IM_ARRAYSIZE(items));
 
     if (item_current != settings.drawcase)
     {
@@ -35,8 +35,21 @@ static void DrawScenario(dx9settings& settings)
             settings.pdraw->Create(settings.d3dDevcie);
             settings.drawcase = CASE_TRIANGLE;
 
+            settings.drawSet.fillMode = D3DFILL_SOLID;
+            settings.drawSet.cullMode = D3DCULL_NONE;
+
             break;
 
+        case 2:
+
+            settings.pdraw = new rect();
+            settings.pdraw->Create(settings.d3dDevcie);
+            settings.drawcase = CASE_RECTANGLE;
+
+            settings.drawSet.fillMode = D3DFILL_SOLID;
+            settings.drawSet.cullMode = D3DCULL_CW;
+
+            break;
         default:
             break;
 
@@ -49,6 +62,18 @@ static void DrawCullMode(dx9settings& settings)
 {
     const char* items[] = { "D3DCULL_NONE","D3DCULL_CW","D3DCULL_CCW","D3DCULL_FORCE_DWORD" };
     static int item_current = 0;
+
+
+
+    switch (settings.drawSet.cullMode)
+    {
+    case D3DCULL_NONE: item_current = 0; break;
+    case D3DCULL_CW: item_current = 1; break;
+    case D3DCULL_CCW: item_current = 2; break;
+    case D3DCULL_FORCE_DWORD: item_current = 3; break;
+    }
+
+
     ImGui::Combo("D3DRS_CULLMODE", &item_current, items, IM_ARRAYSIZE(items));
 
 
@@ -78,6 +103,14 @@ static void DrawFillMode(dx9settings& settings)
 {
     const char* items[] = { "D3DFILL_POINT","D3DFILL_WIREFRAME","D3DFILL_SOLID","D3DFILL_FORCE_DWORD" };
     static int item_current = 0;
+
+    switch (settings.drawSet.fillMode)
+    {
+    case D3DFILL_POINT: item_current = 0; break;
+    case D3DFILL_WIREFRAME: item_current = 1; break;
+    case D3DFILL_SOLID: item_current = 2; break;
+    case D3DFILL_FORCE_DWORD: item_current = 3; break;
+    }
     ImGui::Combo("D3DRS_FILLMODE", &item_current, items, IM_ARRAYSIZE(items));
 
 
