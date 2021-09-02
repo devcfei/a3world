@@ -12,7 +12,7 @@ static void DrawScenario(dx9settings& settings)
     
     // Using the _simplified_ one-liner Combo() api here
     // See "Combo" section for examples of how to use the more flexible BeginCombo()/EndCombo() api.
-    const char* items[] = { "null","triangle", "rectangle"};
+    const char* items[] = { "null","triangle", "rectangle", "cube"};
     static int item_current = 0;
     ImGui::Combo("draw scenario", &item_current, items, IM_ARRAYSIZE(items));
 
@@ -50,6 +50,23 @@ static void DrawScenario(dx9settings& settings)
             settings.drawSet.cullMode = D3DCULL_CW;
 
             break;
+
+
+        case 3:
+
+            settings.pdraw = new cube();
+            settings.pdraw->Create(settings.d3dDevcie);
+            settings.drawcase = CASE_CUBE;
+
+            settings.drawSet.fillMode = D3DFILL_WIREFRAME;
+            settings.drawSet.cullMode = D3DCULL_NONE;
+
+            settings.eyeX = 0.0f;
+            settings.eyeY = 4.0f;
+            settings.eyeZ = 8.0f;
+
+            break;
+
         default:
             break;
 
@@ -152,9 +169,9 @@ void DrawSettings(dx9settings& settings)
     DrawScenario(settings);
 
 
-    ImGui::SliderFloat("EyePT-X", &settings.eyeX, -10.0f, 10.0f, "ratio = %.5f");
-    ImGui::SliderFloat("EyePT-Y", &settings.eyeY, -10.0f, 10.0f, "ratio = %.5f");
-    ImGui::SliderFloat("EyePT-Z", &settings.eyeZ, -10.0f, 10.0f, "ratio = %.5f");
+    ImGui::SliderFloat("EyePT-X", &settings.eyeX, -100.0f, 100.0f, "ratio = %.5f");
+    ImGui::SliderFloat("EyePT-Y", &settings.eyeY, -100.0f, 100.0f, "ratio = %.5f");
+    ImGui::SliderFloat("EyePT-Z", &settings.eyeZ, -100.0f, 100.0f, "ratio = %.5f");
     ImGui::SliderFloat("Camera-Angle", &settings.camAngle, -50.0f, 50.0f, "ratio = %.5f");
 
 

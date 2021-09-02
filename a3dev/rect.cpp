@@ -63,11 +63,12 @@ HRESULT rect::Draw(drawsettings& ds)
 
     HRESULT hr;
 
-    m_d3dDevice->SetRenderState(D3DRS_LIGHTING, ds.lightOn);
-    m_d3dDevice->SetRenderState(D3DRS_CULLMODE, ds.cullMode);
-    m_d3dDevice->SetRenderState(D3DRS_FILLMODE, ds.fillMode);
+    hr = m_d3dDevice->SetRenderState(D3DRS_LIGHTING, ds.lightOn);
+    hr = m_d3dDevice->SetRenderState(D3DRS_CULLMODE, ds.cullMode);
+    hr = m_d3dDevice->SetRenderState(D3DRS_FILLMODE, ds.fillMode);
 
 
+    hr = m_d3dDevice->SetTexture(0, m_tex);
 
     hr = m_d3dDevice->SetStreamSource(0, m_pVB, 0, sizeof(ColorVertex));
     hr = m_d3dDevice->SetFVF(ColorVertex::FVF);
@@ -76,7 +77,6 @@ HRESULT rect::Draw(drawsettings& ds)
 
     //hr = m_d3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 
-    hr = m_d3dDevice->SetTexture(0, m_tex);
 
 
     return S_OK;

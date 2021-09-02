@@ -31,6 +31,7 @@
 #include "draw.h"
 #include "triangle.h"
 #include "rect.h"
+#include "cube.h"
 
 
 

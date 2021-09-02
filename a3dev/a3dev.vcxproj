@@ -160,6 +160,7 @@
     <ClInclude Include="..\imgui\imstb_textedit.h" />
     <ClInclude Include="..\imgui\imstb_truetype.h" />
     <ClInclude Include="a3dev.h" />
+    <ClInclude Include="cube.h" />
     <ClInclude Include="draw.h" />
     <ClInclude Include="dx9settings.h" />
     <ClInclude Include="framework.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="a3dev.cpp" />
+    <ClCompile Include="cube.cpp" />
     <ClCompile Include="dx9settings.cpp" />
     <ClCompile Include="rect.cpp" />
     <ClCompile Include="triangle.cpp" />
