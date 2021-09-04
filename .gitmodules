@@ -1,4 +1,8 @@
+[submodule "imgui"]
+	path = imgui
+	url = https://github.com/devcfei/imgui.git
+	branch = dev
 [submodule "ImGuiFileDialog"]
 	path = ImGuiFileDialog
-	url = https://github.com/aiekick/ImGuiFileDialog.git
-	branch = Lib_Only
+	url = https://github.com/devcfei/ImGuiFileDialog.git
+	branch = dev

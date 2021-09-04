@@ -500,8 +500,8 @@ HRESULT mesh::Draw(drawsettings& ds)
         ++it)
     {
 
-        int index = it - m_vecTex.begin();
-        hr = m_d3dDevice->SetTexture(index, (*it));
+        size_t index = it - m_vecTex.begin();
+        hr = m_d3dDevice->SetTexture((DWORD)index, (*it));
 
     }
 
