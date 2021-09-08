@@ -25,7 +25,9 @@ struct dx9settings
 	float eyeX;
 	float eyeY;
 	float eyeZ;
-	float camAngle;
+	float camAngleX;
+	float camAngleY;
+	float camAngleZ;
 
 
 	drawsettings drawSet;

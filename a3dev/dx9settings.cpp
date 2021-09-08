@@ -76,7 +76,9 @@ static void resetDrawSetting(dx9settings& settings)
 
 
 
-    settings.camAngle = 0.0f;
+    settings.camAngleX = 0.0f;
+    settings.camAngleY = 0.0f;
+    settings.camAngleZ = 0.0f;
 }
 
 static void DrawScenario(dx9settings& settings)
@@ -260,7 +262,9 @@ void DrawSettings(dx9settings& settings)
     ImGui::SliderFloat("EyePT-X", &settings.eyeX, -100.0f, 100.0f, "ratio = %.5f");
     ImGui::SliderFloat("EyePT-Y", &settings.eyeY, -100.0f, 100.0f, "ratio = %.5f");
     ImGui::SliderFloat("EyePT-Z", &settings.eyeZ, -100.0f, 100.0f, "ratio = %.5f");
-    ImGui::SliderFloat("Camera-Angle", &settings.camAngle, -50.0f, 50.0f, "ratio = %.5f");
+    ImGui::SliderFloat("Camera-X", &settings.camAngleX, -50.0f, 50.0f, "ratio = %.5f");
+    ImGui::SliderFloat("Camera-Y", &settings.camAngleY, -50.0f, 50.0f, "ratio = %.5f");
+    ImGui::SliderFloat("Camera-Z", &settings.camAngleZ, -50.0f, 50.0f, "ratio = %.5f");
 
     ImGui::Checkbox("D3DRS_LIGHTING", &settings.drawSet.lightOn);
 

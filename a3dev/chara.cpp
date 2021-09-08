@@ -70,7 +70,7 @@ HRESULT chara::Draw(drawsettings& ds)
 
 
 
-HRESULT chara::UpdateView(float eyeX, float eyeY, float eyeZ, float camAngle)
+HRESULT chara::UpdateView(float eyeX, float eyeY, float eyeZ, float camAngleX, float camAngleY, float camAngleZ)
 {
 
 	HRESULT hr = S_OK;
@@ -79,7 +79,7 @@ HRESULT chara::UpdateView(float eyeX, float eyeY, float eyeZ, float camAngle)
 		it != m_vecMesh.end();
 		++it)
 	{
-		(*it)->UpdateView(eyeX, eyeY, eyeZ, camAngle);
+		(*it)->UpdateView(eyeX, eyeY, eyeZ, camAngleX, camAngleY, camAngleZ);
 	}
 
 	return hr;

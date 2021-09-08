@@ -85,13 +85,23 @@ HRESULT rect::Draw(drawsettings& ds)
 
 
 
-HRESULT rect::UpdateView(float eyeX, float eyeY, float eyeZ, float camAngle)
+HRESULT rect::UpdateView(float eyeX, float eyeY, float eyeZ, float camAngleX, float camAngleY, float camAngleZ)
 {
     // For our world matrix, we will just rotate the object about the y-axis.
+    D3DXMATRIXA16 matWorldX;
+    D3DXMATRIXA16 matWorldY;
+    D3DXMATRIXA16 matWorldZ;
     D3DXMATRIXA16 matWorld;
 
-    FLOAT fAngle = D3DX_PI * camAngle / 18;   // WY - one step for 10 degree 
-    D3DXMatrixRotationY(&matWorld, fAngle);
+    FLOAT fAngleX = D3DX_PI * camAngleX / 18;   // rotation X 
+    D3DXMatrixRotationX(&matWorldX, fAngleX);
+    FLOAT fAngleY = D3DX_PI * camAngleY / 18;   // rotation Y
+    D3DXMatrixRotationY(&matWorldY, fAngleY);
+    FLOAT fAngleZ = D3DX_PI * camAngleZ / 18;   // rotation Z
+    D3DXMatrixRotationZ(&matWorldZ, fAngleZ);
+
+    matWorld = matWorldX * matWorldY * matWorldZ;
+
     m_d3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
     // Set up our view matrix. A view matrix can be defined given an eye point,
@@ -116,6 +126,7 @@ HRESULT rect::UpdateView(float eyeX, float eyeY, float eyeZ, float camAngle)
     m_d3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
     return S_OK;
 }
+
 
 
 

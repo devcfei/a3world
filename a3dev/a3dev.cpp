@@ -173,7 +173,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             // draw
             if (settings.pdraw)
             {
-                settings.pdraw->UpdateView(settings.eyeX,settings.eyeY, settings.eyeZ ,settings.camAngle);
+                settings.pdraw->UpdateView(settings.eyeX,settings.eyeY, settings.eyeZ ,
+                        settings.camAngleX, settings.camAngleY, settings.camAngleZ);
                 settings.pdraw->Draw(settings.drawSet);
             }
 

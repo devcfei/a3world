@@ -8,7 +8,7 @@ public:
 	mesh();
 	mesh(LPCTSTR path,LPCTSTR fullname);
 	virtual HRESULT Create(LPDIRECT3DDEVICE9 d3dDevice);
-	virtual HRESULT UpdateView(float eyeX, float eyeY, float eyeZ, float camAngle);
+	virtual HRESULT UpdateView(float eyeX, float eyeY, float eyeZ, float camAngleX, float camAngleY, float camAngleZ);
 	virtual HRESULT Draw(drawsettings& ds);
 	HRESULT Reset();
 
