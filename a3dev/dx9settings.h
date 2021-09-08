@@ -5,6 +5,7 @@
 #define CASE_RECTANGLE	2
 #define CASE_CUBE		3
 #define CASE_MESH		4
+#define CASE_A3CHARA		5
 
 
 
@@ -36,7 +37,6 @@ struct dx9settings
 	char szA3CharPath[MAX_PATH];
 
 
-	draw* pdrawA3;
 
 
 };

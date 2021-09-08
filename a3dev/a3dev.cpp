@@ -157,7 +157,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             ImGui::End();
         }
 
-        // Rendering
+        // 4. Rendering
         ImGui::EndFrame();
         g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
         g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
@@ -177,12 +177,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 settings.pdraw->Draw(settings.drawSet);
             }
 
-            // drawA3
-            if (settings.pdrawA3)
-            {
-                settings.pdrawA3->UpdateView(settings.eyeX, settings.eyeY, settings.eyeZ, settings.camAngle);
-                settings.pdrawA3->Draw(settings.drawSet);
-            }
 
             g_pd3dDevice->EndScene();
         }
@@ -257,10 +251,21 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
    iScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-   int nWidth = 1024;
-   int nHeight = 768;
+   int nWidth = 1024;   // TODO: should from app settings
+   int nHeight = 768;   //
 
-   hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+
+   //
+   // compute the window size based on client size
+   RECT rect;
+   rect.left =100; rect.right = rect.left+nWidth;
+   rect.top =100; rect.bottom = rect.top+ nHeight;
+   AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME, 1, 0);
+
+   nWidth = rect.right - rect.left;
+   nHeight = rect.bottom - rect.top;
+
+   hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME,
        (iScreenWidth - nWidth) / 2,
        (iScreenHeight - nHeight) / 2,
        nWidth, nHeight,
@@ -318,10 +323,15 @@ void CleanupDeviceD3D()
 void ResetDevice()
 {
     ImGui_ImplDX9_InvalidateDeviceObjects();
-    HRESULT hr = g_pd3dDevice->Reset(&g_d3dpp);
+
 
     if (settings.pdraw)
         settings.pdraw->Reset();
+
+
+    HRESULT hr = g_pd3dDevice->Reset(&g_d3dpp);
+
+
     if (hr == D3DERR_INVALIDCALL)
         IM_ASSERT(0);
     ImGui_ImplDX9_CreateDeviceObjects();
